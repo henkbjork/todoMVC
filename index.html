@@ -8,27 +8,36 @@
     <script src="main.js" defer></script>
     <title>TodoMVC</title>
 </head>
-
-<body>
-    <header id="todo-app" class="top">
-        <h1 class="header">todos</h1>
-    </header>
-
-    <section class="input">
-        <input type="text" id="todo-list" placeholder="">
-        <button oncklick="newTodo()" class="addBtn">Add</button>
-        <button oncklick="newTodo()" class="addBtn">Clear all</button>
-        <ul id="toDo">
-        </ul>
-    </section>
-
-
-    <footer class="info">
-        <p>blablabla</p>
-        <p>blablabla</p>
-        <p>blablabla</p>
-    </footer>
-
-</body>
-
+    <body>
+        <div class="flex-container">
+            <header class="top" id="header">
+                <h1>todos</h1>
+            </header>
+            <section class="todo-app">
+                <div id="toggle-todo">
+                    <input type="checkbox" name="toggle-all" id="toggle-all">
+                    <input type="text" id="input-text" placeholder="What needs to be done?">  
+                </div>
+                <ul id="todo-items">
+                    <li><input type="checkbox" name="todo" class="todo"><label for="">sdfsdf</label></li>
+                    <li><input type="checkbox" name="todo" class="todo">wejhfwe</li>
+                    <li><input type="checkbox" name="todo" class="todo">wejhfwe</li>
+                </ul>
+                <div class="list-container">
+                    <span id="count">0 items left</span>
+                    <ul id="todo-list">
+                        <li><a href="#">All</a></li>
+                        <li><a href="#">Active</a></li>
+                        <li><a href="#">Completed</a></li>
+                    </ul>
+                    <button id="clear-btn">Clear all</button>
+                </div>
+            </section>
+            <footer>
+                <p>Dobble click to edit a todo</p>
+                <p>Written by <a href="https://github.com/andreasheige">Andreas Heige</a> and <a href="https://github.com/henkbjork">Henrik Björk</a></p>
+                <p>Part of<a href="http://todomvc.com/"> TodoMVC</a></p>
+            </footer>
+        </div>
+    </body>
 </html>

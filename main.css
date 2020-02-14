@@ -1,36 +1,131 @@
-html,
-body {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 body {
-    font-family: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #f5f5f5;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.flex-container {
     display: flex;
     flex-direction: column;
-    background: #f5f5f5;
+    background-color: f5f5f5;
 }
 
-h1,
-.header {
-    margin-left: auto;
-    margin-right: auto;
+header h1 {
+    text-align: center;
+    font-size: 6rem;
+    font-weight: 300;
     color: rgba(175, 47, 47, 0.15);
 }
-
-.top {
-    min-height: 100px;
-    background: #f5f5f5;
+.todo-app {
+    width: 30rem;
+    margin: auto;
+    box-shadow: 5px 10px 18px #d4d4d4;
+    outline: none;
 }
 
-.input {
-    align-content: center;
+#toggle-todo {
+    display: flex;
+    align-items: center;
+    background: rgb(253, 253, 253);
+    padding-left: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.bottom {
-    min-height: auto;
+#input-text {
+    padding: 0.8rem 1rem 0.8rem 3rem;
+    width: 100%;
+    font-size: 1.5rem;
+    font-style: italic;
+    font-weight: 300;
+    background: rgb(253, 253, 253);
+    border: none;
+    outline: none;
+}
+
+::placeholder {
+    color: rgb(214, 212, 212)
+}
+
+#todo-items {
+    list-style: none;
+    background: #fff;
+}
+
+#todo-items li {
+    font-size: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+ul li input {
+    margin-right: 3rem;
+    margin-left: 1rem;
+}
+
+.list-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+}
+
+.list-container span {
+    color: #777;
+    padding-left: 10px;
+}
+
+.list-container a {
+    color: #777;
+    text-decoration: none;
+}
+
+.list-container a:hover {
+    border: 1px solid rgba(175, 47, 47, 0.15);
+    border-radius: 0.3rem;
+    padding: 4px;
+    margin: -5px;
+}
+
+.list-container #clear-btn {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    border: none;
+    background-color: #fff;
+    color: #777;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.list-container #clear-btn:hover {
+    text-decoration: underline;
+}
+
+#todo-list {
+    list-style: none;
+    display: flex;
+}
+
+#todo-list li {
+    margin: 1rem 0.5rem;
+}
+
+footer {
     text-align: center;
-    background: #f5f5f5;
+    margin-top: 4rem;
+    color: rgb(214, 212, 212);
+    font-size: 0.7rem;
+}
+
+footer a {
+    text-decoration: none;
+    color: rgb(206, 206, 206)
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
