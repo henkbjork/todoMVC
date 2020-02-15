@@ -7,6 +7,7 @@
 body {
     background: #f5f5f5;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    counter-reset: count;
 }
 
 .flex-container {
@@ -47,18 +48,52 @@ header h1 {
     outline: none;
 }
 
-::placeholder {
-    color: rgb(214, 212, 212)
+#toggle-todo .fa-angle-down {
+    color: rgb(214, 212, 212);
+    cursor: pointer;
 }
 
-#todo-items {
+::placeholder {
+    color: rgb(214, 212, 212);
+}
+
+#todo-list {
     list-style: none;
     background: #fff;
 }
 
-#todo-items li {
+#todo-list li {
     font-size: 1.5rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#todo-list .overline {
+    font-size: 1.5rem;
+    text-decoration: line-through;
+    color: rgb(214, 212, 212);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#todo-list li .fa-times {
+    margin-left: 21rem;
+    color:rgba(175, 47, 47, 0.4);
+    cursor: pointer;
+}
+
+#todo-list li .fa-circle {
+    margin-right: 2rem;
+    margin-left: 0.5rem;
+    color: rgb(214, 212, 212);
+    padding: 0.7rem 0;
+    cursor: pointer;
+}
+
+#todo-list li .fa-check-circle {
+    margin-right: 2rem;
+    margin-left: 0.5rem;
+    color: rgb(214, 212, 212);
+    padding: 0.7rem 0;
+    cursor: pointer;
 }
 
 ul li input {
@@ -105,12 +140,12 @@ ul li input {
     text-decoration: underline;
 }
 
-#todo-list {
+#nav-bar {
     list-style: none;
     display: flex;
 }
 
-#todo-list li {
+#nav-bar li {
     margin: 1rem 0.5rem;
 }
 
@@ -119,6 +154,7 @@ footer {
     margin-top: 4rem;
     color: rgb(214, 212, 212);
     font-size: 0.7rem;
+    line-height: 1.5rem;
 }
 
 footer a {

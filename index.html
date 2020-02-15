@@ -6,31 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="main.css">
     <script src="main.js" defer></script>
+    <script src="https://kit.fontawesome.com/b6a126cf35.js" crossorigin="anonymous"></script>
     <title>TodoMVC</title>
 </head>
-    <body>
+    <body onload="counter()">
         <div class="flex-container">
             <header class="top" id="header">
                 <h1>todos</h1>
             </header>
             <section class="todo-app">
                 <div id="toggle-todo">
-                    <input type="checkbox" name="toggle-all" id="toggle-all">
+                    <i class="fas fa-angle-down fa-lg"></i>
                     <input type="text" id="input-text" placeholder="What needs to be done?">  
                 </div>
-                <ul id="todo-items">
-                    <li><input type="checkbox" name="todo" class="todo"><label for="">sdfsdf</label></li>
-                    <li><input type="checkbox" name="todo" class="todo">wejhfwe</li>
-                    <li><input type="checkbox" name="todo" class="todo">wejhfwe</li>
+                <ul id="todo-list">
+                    <li class="todo-item"><i class="far fa-circle"></i>ssss<i class="fas fa-times delete-item"></i></li>
+                    <li class="todo-item"><i class="far fa-circle"></i>ssss<i class="fas fa-times delete-item"></i></li>
+                    <li class="todo-item"><i class="far fa-circle"></i>ssss<i class="fas fa-times delete-item"></i></li>
+                    <li class="todo-item"><i class="far fa-circle"></i>ssss<i class="fas fa-times delete-item"></i></li>
                 </ul>
                 <div class="list-container">
                     <span id="count">0 items left</span>
-                    <ul id="todo-list">
+                    <ul id="nav-bar">
                         <li><a href="#">All</a></li>
                         <li><a href="#">Active</a></li>
                         <li><a href="#">Completed</a></li>
                     </ul>
-                    <button id="clear-btn">Clear all</button>
+                    <button id="clear-btn">Clear completed</button>
                 </div>
             </section>
             <footer>
