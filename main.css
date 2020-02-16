@@ -58,8 +58,17 @@ header h1 {
 }
 
 #todo-list {
+    display: flex;
+    flex-direction: column;
     list-style: none;
     background: #fff;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    overflow: hidden;
 }
 
 #todo-list li {
@@ -67,15 +76,15 @@ header h1 {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-#todo-list .overline {
+#todo-list .overline span {
     font-size: 1.5rem;
     text-decoration: line-through;
     color: rgb(214, 212, 212);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #todo-list li .fa-times {
-    margin-left: 21rem;
+    position: absolute;
+    margin-left: 28rem;
     color:rgba(175, 47, 47, 0.4);
     cursor: pointer;
 }
