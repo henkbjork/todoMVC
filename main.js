@@ -1,4 +1,6 @@
-// Counter
+'use strict';
+
+// Variables
 let count;
 let completedTodo = [];
 let todoList = [];
