@@ -7,7 +7,7 @@ document.querySelector('#input-text').addEventListener('keypress', addTodo);
 document.querySelector('#todo-list').addEventListener('click', toggleCheckbox);
 
 // Delete an item
-document.querySelector('#todo-list').addEventListener('click', deleteItem);
+
 
 // Items left
 
@@ -18,6 +18,8 @@ document.querySelector('#todo-list').addEventListener('click', deleteItem);
 // Completed
 
 // Clear completed
+document.querySelector('#clear-btn').addEventListener('click', clearCompleted);
+
 
 function addTodo(event) {
     if(event.keyCode == 13) {
@@ -83,6 +85,19 @@ function deleteItem(event) {
         // remove the li
         todoElement.remove();
     }
+}
+
+
+function clearCompleted(event) {
+    todoItems = [];
+    console.log(todoItems.length);
+    const listItems = document.querySelectorAll('#todo-list li');
+    console.log(listItems);
+    listItems.forEach(item => {
+        if(item.classList.contains('overline')) {
+            item.remove();
+        }
+    });
 }
 
 
