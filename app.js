@@ -9,6 +9,16 @@ document.querySelector('#todo-list').addEventListener('click', toggleCheckbox);
 // Delete an item
 document.querySelector('#todo-list').addEventListener('click', deleteItem);
 
+// Items left
+
+// All
+
+// Active
+
+// Completed
+
+// Clear completed
+
 function addTodo(event) {
     if(event.keyCode == 13) {
         let textInput = event.target.value;
@@ -26,8 +36,8 @@ function addTodo(event) {
             const listItem = document.querySelector('#todo-list');
             listItem.insertAdjacentHTML('beforeend', `
             <li class="todo-item" data-key="${todo.id}">
-                <i class="far fa-circle" id="${todo.id}"></i>
-                <span>${todo.textInput}</span>
+                <i class="far fa-circle checkbox" id="${todo.id}"></i>
+                <label>${todo.textInput}</label>
                 <i class="fas fa-times delete-item"></i>
             </li>
             `);
@@ -37,7 +47,7 @@ function addTodo(event) {
 
 
 function toggleCheckbox(event) {
-    if(event.target.classList.contains('far')) {
+    if(event.target.classList.contains('checkbox')) {
         const itemKey = event.target.parentElement.dataset.key;  
         toggle(itemKey);
     }
@@ -45,16 +55,18 @@ function toggleCheckbox(event) {
 
 
 function toggle(itemKey) {
+    // get the todos index in todoItems
     const itemIndex = todoItems.findIndex(item => item.id === Number(itemKey));
+    // toggle the checkbox
     todoItems[itemIndex].checked = !todoItems[itemIndex].checked;
-
+    
     const item = document.querySelector(`[data-key='${itemKey}']`);
     
     if(todoItems[itemIndex].checked) {
-        item.firstElementChild.setAttribute('class', 'far fa-check-circle');
+        item.firstElementChild.setAttribute('class', 'far fa-check-circle checkbox');
         item.setAttribute('class', 'todo-item overline');
     } else {      
-        item.firstElementChild.setAttribute('class', 'far fa-circle');
+        item.firstElementChild.setAttribute('class', 'far fa-circle checkbox');
         item.setAttribute('class', 'todo-item');
     }
 }
@@ -62,10 +74,13 @@ function toggle(itemKey) {
 
 function deleteItem(event) {
     if(event.target.classList.contains('delete-item')) {
+        // get the current itemKey
         const itemKey = event.target.parentElement.dataset.key;
-        toggle(itemKey);
+        // remove the todo from the todoItems list
         todoItems = todoItems.filter(item => item.key !== Number(itemKey));
+        // get the li that should be removed
         const todoElement = document.querySelector(`[data-key='${itemKey}']`);
+        // remove the li
         todoElement.remove();
     }
 }
