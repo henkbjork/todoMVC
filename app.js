@@ -7,15 +7,10 @@ document.querySelector('#input-text').addEventListener('keypress', addTodo);
 document.querySelector('#todo-list').addEventListener('click', toggleCheckbox);
 
 // Delete an item
+document.querySelector('#todo-list').addEventListener('click', deleteItem);
 
-
-// Items left
-
-// All
-
-// Active
-
-// Completed
+// All, Active, Completed
+document.querySelector('#nav-bar').addEventListener('click', displayItems);
 
 // Clear completed
 document.querySelector('#clear-btn').addEventListener('click', clearCompleted);
@@ -37,13 +32,14 @@ function addTodo(event) {
             // add new li to ul including todo data
             const listItem = document.querySelector('#todo-list');
             listItem.insertAdjacentHTML('beforeend', `
-            <li class="todo-item" data-key="${todo.id}">
+            <li class="todo-item ${todo.checked}" data-key="${todo.id}">
                 <i class="far fa-circle checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
                 <i class="fas fa-times delete-item"></i>
             </li>
             `);
         }
+        itemsLeft();
     }
 }
 
@@ -71,6 +67,7 @@ function toggle(itemKey) {
         item.firstElementChild.setAttribute('class', 'far fa-circle checkbox');
         item.setAttribute('class', 'todo-item');
     }
+    itemsLeft();
 }
 
 
@@ -84,22 +81,52 @@ function deleteItem(event) {
         const todoElement = document.querySelector(`[data-key='${itemKey}']`);
         // remove the li
         todoElement.remove();
+        // remove from the todoItems list
+        todoItems = todoItems.filter(item => item.id != todoElement.dataset.key);
+        itemsLeft();
     }
 }
 
 
-function clearCompleted(event) {
-    todoItems = [];
-    console.log(todoItems.length);
-    const listItems = document.querySelectorAll('#todo-list li');
-    console.log(listItems);
+function clearCompleted() {
+    const listItems = document.querySelectorAll('#todo-list li');   
     listItems.forEach(item => {
-        if(item.classList.contains('overline')) {
+        if(!item.classList.contains('false')) {
             item.remove();
-        }
+            itemsLeft();
+        } 
     });
+    // Clear the deleted items from the todoItems list
+    todoItems = todoItems.filter(item => item.checked === false);
 }
 
+
+function displayItems(event) {
+    const listItems = document.querySelectorAll('#todo-list li'); 
+    listItems.forEach(item => {
+        item.style.display = 'flex';
+        if(event.target.parentElement.id === 'completed' && item.classList.contains('false')) {
+            item.style.display = 'none';
+        } else if(event.target.parentElement.id === 'active' && !item.classList.contains('false')) {
+            item.style.display = 'none';
+        }
+    });    
+}
+
+function itemsLeft() {
+    const todos = document.querySelector("#count");
+    const numberOfItemsLeft = todoItems.filter(item => item.checked === false);
+    todos.textContent = numberOfItemsLeft.length + ' items left';
+
+    //Hide nav-bar and arrow
+    if(numberOfItemsLeft.length === 0 && todoItems.length === 0) {
+        document.querySelector('.list-container').style.display = 'none';
+        document.querySelector('.fa-angle-down').style.display = 'none';
+    } else {
+        document.querySelector('.list-container').style.display = 'flex';
+        document.querySelector('.fa-angle-down').style.display = 'block';
+    }
+}
 
 
 
