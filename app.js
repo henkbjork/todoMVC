@@ -1,7 +1,7 @@
 let todoItems = [];
 
 // Add a new todo
-document.querySelector('#input-text').addEventListener('keypress', getTodoText);
+document.querySelector('#input-text').addEventListener('keypress', addTodo);
 
 // Mark item as done
 document.querySelector('#todo-list').addEventListener('click', toggleCheckbox);
@@ -9,31 +9,28 @@ document.querySelector('#todo-list').addEventListener('click', toggleCheckbox);
 // Delete an item
 document.querySelector('#todo-list').addEventListener('click', deleteItem);
 
-function addTodo(textInput) {
-    const todo = {
-        textInput,
-        checked: false,
-        id: Date.now(),
-    };
-    todoItems.push(todo);
-    // clear the input
-    event.target.value = '';  
-    // add new li to ul including todo data
-    const listItem = document.querySelector('#todo-list');
-    listItem.insertAdjacentHTML('beforeend', `
-    <li class="todo-item" data-key="${todo.id}">
-        <i class="far fa-circle" id="${todo.id}"></i>
-        <span>${todo.textInput}</span>
-        <i class="fas fa-times delete-item"></i>
-    </li>
-    `);
-}
-
-function getTodoText(event) {
+function addTodo(event) {
     if(event.keyCode == 13) {
         let textInput = event.target.value;
         if(textInput !== '') {
-            addTodo(textInput);
+            const todo = {
+            textInput,
+            checked: false,
+            id: Date.now(),
+            };
+            // add a new todo to the list todoItems
+            todoItems.push(todo);
+            // clear the input
+            event.target.value = '';  
+            // add new li to ul including todo data
+            const listItem = document.querySelector('#todo-list');
+            listItem.insertAdjacentHTML('beforeend', `
+            <li class="todo-item" data-key="${todo.id}">
+                <i class="far fa-circle" id="${todo.id}"></i>
+                <span>${todo.textInput}</span>
+                <i class="fas fa-times delete-item"></i>
+            </li>
+            `);
         }
     }
 }
