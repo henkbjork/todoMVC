@@ -1,131 +1,216 @@
-'use strict';
-
-// Variables
-let count;
-let todoList = [];
-let completedTodo = [];
-let activeTodo = [];
+let todoItems = [];
+let checked = true;
 
 // Add a new todo
 document.querySelector('#input-text').addEventListener('keypress', addTodo);
 
-// Toggle todo items checkbox
+// Mark item as done
 document.querySelector('#todo-list').addEventListener('click', toggleCheckbox);
 
-// Delete todo item
+// Delete an item
 document.querySelector('#todo-list').addEventListener('click', deleteItem);
 
+// All, Active, Completed
+document.querySelector('#nav-bar').addEventListener('click', displayItems);
+
+// Clear completed
+document.querySelector('#clear-btn').addEventListener('click', clearCompleted);
+
 // Toggle all todo items
-//document.querySelector('.fa-angle-down').addEventListener('click', toggleTodos);
+document.querySelector('.fa-angle-down').addEventListener('click', toggleAllItems);
 
-// Clear all completed todos
-//document.querySelector('ul #nav-bar li:last-child').addEventListener('click', clearCompleted);
+//update item
+document.querySelector('#todo-list').addEventListener('dblclick', updateTodo)
+
+// load from localstorage
+document.addEventListener('DOMContentLoaded', getTodos);
 
 
-function addTodo(e) {
-    if(e.key === 'Enter') {      
-    // create li and span
-    const li = document.createElement('li');
-    const span = document.createElement('span');
-    // add a class to the li
-    li.className = 'todo-item';
-    // create new i element
-    const deleteIcon = document.createElement('i');
-    const uncheckedIcon = document.createElement('i');
-    // add a class to the i
-    deleteIcon.className = 'fas fa-times delete-item'; 
-    uncheckedIcon.className = 'far fa-circle';
-    // add icon html
-    deleteIcon.innerHTML = '<i></i>';
-    uncheckedIcon.innerHTML = '<i></i>';
-    // append the icon and span to the li
-    li.appendChild(uncheckedIcon);
-    li.appendChild(span);
-    //create text node and append to the span
-    span.appendChild(document.createTextNode(e.target.value));
-    // append the icon to the li
-    li.appendChild(deleteIcon);
-    // append li to th ul
-    const theList = document.querySelector('#todo-list');
-    theList.appendChild(li);
-    // clear input
-    e.target.value = '';
-    // Add 1 to the counter
-    counter();
-    // add to todoList
-    todoList.push(li);
-    }    
-}
-
-function toggleCheckbox(e) {
-    // get the li with the toggeld todo
-    const newLi = e.target.parentElement;
-    
-    // check which state the checkbox is in abnd add to list "completedTodo"
-    if(e.target.getAttribute('class') === 'far fa-circle') {  
-        e.target.setAttribute('class', 'far fa-check-circle');
-        e.target.parentElement.setAttribute('class', 'todo-item overline');
-        addComplTodoList(e);
-        //completedTodo.push(newLi);
-    } else if(e.target.getAttribute('class') === 'far fa-check-circle') {
-        e.target.setAttribute('class', 'far fa-circle');
-        e.target.parentElement.setAttribute('class', 'todo-item');
-        removeComplTodoList(e);
-        //const arrIndex = completedTodo.indexOf(newLi);
-        //completedTodo = completedTodo.slice(0, arrIndex).concat(completedTodo.slice(arrIndex + 1, completedTodo.length));
-    } 
-    //counter();
-}
- 
-// function deleteItem(e) {
-//     if(e.target.classList.contains('delete-item')) {
-//         e.target.parentElement.remove();
-//         counter();
-//     }
-// }
-
-function deleteListItem(e) {
-    e.target.parentElement.remove();
-    counter();
-}
-
-function addComplTodoList(e) {
-    const newLi = e.target.parentElement;
-    completedTodo.push(newLi);
-    console.log("addin: " + newLi);
-    counter();
-}
-
-function removeComplTodoList(e) {
-    const newLi = e.target.parentElement;
-    const arrIndex = completedTodo.indexOf(newLi);
-    completedTodo = completedTodo.slice(0, arrIndex).concat(completedTodo.slice(arrIndex + 1, completedTodo.length));
-    console.log("removin: " + newLi);
-    counter();
-}
-
-function deleteItem(e) {
-    if(e.target.classList.contains('delete-item')) {
-        deleteListItem(e);
-    } else if(e.target.classList.contains('overline')) {
-        removeComplTodoList(e);
+function addTodo(event) {
+    if(event.keyCode == 13) {
+        let textInput = event.target.value;
+        if(textInput !== '') {
+            const todo = {
+            textInput,
+            checked: false,
+            id: Date.now(),
+            };
+            // add a new todo to the list todoItems
+            todoItems.push(todo);
+            // store in localstorage
+            storeTodoInLocalStorage(todo);
+            // clear the input
+            event.target.value = '';  
+            // add new li to ul including todo data
+            const listItem = document.querySelector('#todo-list');
+            listItem.insertAdjacentHTML('beforeend', `
+            <li class="todo-item ${todo.checked}" contentEditable = "true" data-key="${todo.id}">
+                <i class="far fa-circle checkbox" id="${todo.id}"></i>
+                <label>${todo.textInput}</label>
+                <i class="fas fa-times delete-item"></i>
+            </li>
+            `);
+        }
+        itemsLeft();
     }
 }
 
-function counter() {
-    const todoItems = document.querySelector('#todo-list');
-    count = todoItems.children.length - completedTodo.length;
-    const increaseCount = document.querySelector("#count");
-
-    if(todoItems.firstElementChild !== null && count <= 0) {
-        increaseCount.textContent = 0 + ' items left';
+function storeTodoInLocalStorage(todo) {
+    let todos;
+    if(localStorage.getItem('todos') === null) {
+        todos = [];
     } else {
-        increaseCount.textContent = count + ' items left';
+        todos = JSON.parse(localStorage.getItem('todos'))
     }
+    todos.push(todo);
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+function getTodos() {
+    let todos;
+    if(localStorage.getItem('todos') === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem('todos'))
+    }
+
+    todos.forEach(function(todo) {
+        // add a new todo to the list todoItems
+        todoItems.push(todo);
+        // add new li to ul including todo data
+        const listItem = document.querySelector('#todo-list');
+        listItem.insertAdjacentHTML('beforeend', `
+        <li class="todo-item ${todo.checked}" contentEditable = "true" data-key="${todo.id}">
+            <i class="far fa-circle checkbox" id="${todo.id}"></i>
+            <label>${todo.textInput}</label>
+            <i class="fas fa-times delete-item"></i>
+        </li>
+        `);
+    });
+}
+
+
+function toggleCheckbox(event) {
+    if(event.target.classList.contains('checkbox')) {
+        const itemKey = event.target.parentElement.dataset.key;  
+        toggle(itemKey);
+    }
+}
+
+
+function toggle(itemKey) {    
+    // get the todos index in todoItems
+    const itemIndex = todoItems.findIndex(item => item.id === Number(itemKey));
+    // toggle the checkbox
+    todoItems[itemIndex].checked = !todoItems[itemIndex].checked;
     
+    const item = document.querySelector(`[data-key='${itemKey}']`);
+    
+    if(todoItems[itemIndex].checked) {
+        item.firstElementChild.setAttribute('class', 'far fa-check-circle checkbox');
+        item.setAttribute('class', 'todo-item overline');
+    } else {      
+        item.firstElementChild.setAttribute('class', 'far fa-circle checkbox');
+        item.setAttribute('class', 'todo-item false');
+    }
+    itemsLeft();
+}
+
+
+function toggleAllItems() {
+    const todos = document.querySelectorAll('#todo-list li i:first-child');
+    todos.forEach(todo => {
+        if(checked) {
+            let itemId = todo.getAttribute('id');
+            let itemIndex = todoItems.findIndex(item => item.id == itemId);
+            todoItems[itemIndex].checked = true;
+            todo.setAttribute('class', 'far fa-check-circle checkbox');
+            todo.parentElement.setAttribute('class', 'todo-item overline');
+        } else {
+            let itemId = todo.getAttribute('id');
+            let itemIndex = todoItems.findIndex(item => item.id == itemId);
+            todoItems[itemIndex].checked = false;
+            todo.setAttribute('class', 'far fa-circle checkbox');
+            todo.parentElement.setAttribute('class', 'todo-item false');
+        }
+    });
+    checked = !checked;
+    itemsLeft();
+}
+    
+
+function deleteItem(event) {
+    if(event.target.classList.contains('delete-item')) {
+        // get the current itemKey
+        const itemKey = event.target.parentElement.dataset.key;
+        // remove the todo from the todoItems list
+        todoItems = todoItems.filter(item => item.key !== Number(itemKey));
+        // get the li that should be removed
+        const todoElement = document.querySelector(`[data-key='${itemKey}']`);
+        // remove the li
+        todoElement.remove();
+        // remove from the todoItems list
+        todoItems = todoItems.filter(item => item.id != todoElement.dataset.key);
+        itemsLeft();
+        //remove from localstorage
+        removeTodoFromLocalStorage(todoElement);
+    }
+}
+
+function removeTodoFromLocalStorage(todoItem) {
+    let todos;
+    if(localStorage.getItem('todos') === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem('todos'))
+    }
+
+    todos.forEach(function(todo, index) {      
+        if(todoItem.children[1].textContent === todo.textInput) {
+            todos.splice(index, 1);
+        }
+    });
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+function clearCompleted() {
+    const listItems = document.querySelectorAll('#todo-list li');       
+    listItems.forEach(item => {
+        if(!item.classList.contains('false')) {
+            item.remove();
+            // Clear from localstorage
+            removeTodoFromLocalStorage(item);
+        } 
+    });
+    // Clear the deleted items from the todoItems list
+    todoItems = todoItems.filter(item => item.checked === false);
+    itemsLeft();
+}
+
+
+function displayItems(event) {
+    event.preventDefault();
+    location.hash = '';
+    const listItems = document.querySelectorAll('#todo-list li'); 
+    listItems.forEach(item => {
+        item.style.display = 'flex';
+        if(event.target.parentElement.id === 'completed' && item.classList.contains('false')) {
+            item.style.display = 'none';
+            location.hash = 'completed';
+        } else if(event.target.parentElement.id === 'active' && !item.classList.contains('false')) {
+            item.style.display = 'none';
+            location.hash = 'active';
+        }
+    });    
+}
+
+function itemsLeft() {
+    const todos = document.querySelector("#count");
+    const numberOfItemsLeft = todoItems.filter(item => item.checked === false);
+    todos.textContent = numberOfItemsLeft.length + ' items left';
 
     //Hide nav-bar and arrow
-    if(todoItems.firstElementChild === null) {
+    if(numberOfItemsLeft.length === 0 && todoItems.length === 0) {
         document.querySelector('.list-container').style.display = 'none';
         document.querySelector('.fa-angle-down').style.display = 'none';
     } else {
@@ -135,20 +220,26 @@ function counter() {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function updateTodo() {
+    document.addEventListener('keypress', function(e) {
+        if (e.currentTarget.activeElement.className === 'content') {
+            if ((e.keyCode || e.which) == 13) {
+                var li = document.createElement('li');
+                var ce = document.createAttribute('contenteditable');
+                ce.value = "true";
+                var cl = document.createAttribute('class');
+                cl.value = 'content';
+                li.setAttributeNode(ce);
+                li.setAttributeNode(cl);
+                e.currentTarget.activeElement.insertAfter(li);
+                li.focus();
+                return false;
+            } else {
+                return true;
+            }
+        }
+    });
+}
 
 
 
