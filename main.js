@@ -139,8 +139,12 @@ function toggle(itemKey) {
 
 
 function updateLocalStorage(itemIndex) {
-    let todos = JSON.parse(localStorage.getItem('todos'))
-    todos[itemIndex].checked = true;
+    let todos = JSON.parse(localStorage.getItem('todos'));
+    if(!todos[itemIndex].checked) {
+        todos[itemIndex].checked = true;
+    } else {
+        todos[itemIndex].checked = false;
+    }
     localStorage.setItem('todos', JSON.stringify(todos));
 }
     
@@ -148,19 +152,18 @@ function updateLocalStorage(itemIndex) {
 function toggleAllItems() {
     const todos = document.querySelectorAll('#todo-list li i:first-child');
     todos.forEach(todo => {
+        let itemId = todo.getAttribute('id');
+        let itemIndex = todoItems.findIndex(item => item.id == itemId);
         if(checked) {
-            let itemId = todo.getAttribute('id');
-            let itemIndex = todoItems.findIndex(item => item.id == itemId);
             todoItems[itemIndex].checked = true;
             todo.setAttribute('class', 'check checkbox');
             todo.parentElement.setAttribute('class', 'todo-item overline');
         } else {
-            let itemId = todo.getAttribute('id');
-            let itemIndex = todoItems.findIndex(item => item.id == itemId);
             todoItems[itemIndex].checked = false;
             todo.setAttribute('class', 'uncheck checkbox');
             todo.parentElement.setAttribute('class', 'todo-item false');
         }
+        updateLocalStorage(itemIndex);
     });
     checked = !checked;
     itemsLeft();
@@ -258,30 +261,42 @@ function updateTodo(event) {
     if(event.target.parentElement.classList.contains('todo-item')) {
         const itemKey = event.target.parentElement.dataset.key;  
         const todoElement = document.querySelector(`[data-key='${itemKey}']`);
-        
+
+        todoElement.children[0].setAttribute('style', 'display:none');
         todoElement.children[1].setAttribute('style', 'display:none');
         todoElement.children[2].setAttribute('style', 'display:block');
 
-        todoElement.addEventListener('keypress', function(event) {
-            if(event.keyCode == 13) {
+        todoElement.addEventListener('change', function(event) {
+            console.log(event.type);
+            
+            if(event.keyCode == 13 || event.type == 'change') {
                 document.querySelector('#input-text').focus();
                 let textInput = event.target.value;
                 todoElement.children[1].textContent = textInput;
                 // update the element
+                todoElement.children[0].setAttribute('style', 'display:block');
                 todoElement.children[1].setAttribute('style', 'display:block');
                 todoElement.children[2].setAttribute('style', 'display:none');
                 // update the todoList
                 const itemKey = event.target.parentElement.dataset.key;
                 const itemIndex = todoItems.findIndex(item => item.id === Number(itemKey));
-                
-                
+                todoItems.forEach(todo => {
+                    if(todo.id == itemKey) {
+                        todo.textInput = textInput;    
+                    }
+                }); 
+                //update localstorage
+                todos = JSON.parse(localStorage.getItem('todos'));
+                todos.forEach(todo => {
+                if(todo.id == itemKey) {
+                    todo.textInput = textInput;
+                }
+                });
+                localStorage.setItem('todos', JSON.stringify(todos));
             }
         });
     }
 }
-
-
-
 
 
 
