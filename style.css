@@ -6,7 +6,7 @@
 
 body {
     background: #f5f5f5;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     counter-reset: count;
 }
 
@@ -23,7 +23,7 @@ header h1 {
     color: rgba(175, 47, 47, 0.15);
 }
 .todo-app {
-    width: 30rem;
+    width: 35rem;
     margin: auto;
     box-shadow: 5px 10px 18px #d4d4d4;
     outline: none;
@@ -41,6 +41,7 @@ header h1 {
     padding: 0.8rem 1rem 0.8rem 3rem;
     width: 100%;
     color: #4d4d4d;
+    line-height: 3rem;
     font-size: 1.5rem;
     font-weight: 300;
     background: rgba(0, 0, 0, 0);
@@ -67,13 +68,16 @@ header h1 {
 
 .todo-item {
     display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
-    overflow: hidden;
+    overflow: auto;
 }
 
 #todo-list li {
     font-size: 1.5rem;
+    line-height: 4rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -87,30 +91,47 @@ header h1 {
     color: rgb(214, 212, 212);
 }
 
-#todo-list li .fa-times {
+.delete-item {
     display: none;
 }
 
-#todo-list li:hover .fa-times {
+li:hover .delete-item {
+    align-self: baseline;
+    margin-left: 32rem;
+    display: block;
+    cursor: pointer;
     display: block;
     position: absolute;
-    margin-left: 28rem;
-    color:rgba(175, 47, 47, 0.4);
-    cursor: pointer;
+	width: 40px;
+	height: 40px;
+	font-size: 30px;
+	color: #cc9a9a;
+	transition: color 0.2s ease-out;
 }
 
-#todo-list li .fa-circle {
-    margin-right: 2rem;
-    margin-left: 0.5rem;
-    color: rgb(214, 212, 212);
+li .delete-item:hover {
+    color: #af5b5e;
+}
+
+.delete-item:after {
+	content: '×';
+}
+
+#todo-list li .uncheck {
+    width: 40px;
+    height: 40px;
+    margin-right: 1.5rem;
+    background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
     padding: 0.7rem 0;
     cursor: pointer;
 }
 
-#todo-list li .fa-check-circle {
-    margin-right: 2rem;
-    margin-left: 0.5rem;
+#todo-list li .check {
+    width: 40px;
+    height: 40px;
+    margin-right: 1.5rem;
     color: rgb(214, 212, 212);
+    background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E');
     padding: 0.7rem 0;
     cursor: pointer;
 }
@@ -126,6 +147,12 @@ ul li input {
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
+                0 8px 0 -3px #f6f6f6,
+                0 9px 1px -3px rgba(0, 0, 0, 0.2),
+                0 16px 0 -6px #f6f6f6,
+                0 17px 2px -6px rgba(0, 0, 0, 0.2);
 }
 
 .list-container span {
@@ -183,4 +210,14 @@ footer a {
 
 footer a:hover {
     text-decoration: underline;
+}
+
+@media screen and (max-width: 700px) {
+    .todo-app {
+        width: 23rem;
+    }
+
+    li:hover .delete-item {
+        margin-left: 20rem;
+    }
 }

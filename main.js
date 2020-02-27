@@ -44,16 +44,17 @@ function addTodo(event) {
             // add new li to ul including todo data
             const listItem = document.querySelector('#todo-list');
             listItem.insertAdjacentHTML('beforeend', `
-            <li class="todo-item ${todo.checked}" contentEditable = "true" data-key="${todo.id}">
-                <i class="far fa-circle checkbox" id="${todo.id}"></i>
+            <li class="todo-item ${todo.checked}" data-key="${todo.id}">
+                <i class="uncheck checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
-                <i class="fas fa-times delete-item"></i>
+                <i class="delete-item"></i>
             </li>
             `);
         }
         itemsLeft();
     }
 }
+
 
 function storeTodoInLocalStorage(todo) {
     let todos;
@@ -66,6 +67,7 @@ function storeTodoInLocalStorage(todo) {
     localStorage.setItem('todos', JSON.stringify(todos));
 }
 
+
 function getTodos() {
     let todos;
     if(localStorage.getItem('todos') === null) {
@@ -74,18 +76,32 @@ function getTodos() {
         todos = JSON.parse(localStorage.getItem('todos'))
     }
 
-    todos.forEach(function(todo) {
-        // add a new todo to the list todoItems
-        todoItems.push(todo);
-        // add new li to ul including todo data
-        const listItem = document.querySelector('#todo-list');
-        listItem.insertAdjacentHTML('beforeend', `
-        <li class="todo-item ${todo.checked}" contentEditable = "true" data-key="${todo.id}">
-            <i class="far fa-circle checkbox" id="${todo.id}"></i>
-            <label>${todo.textInput}</label>
-            <i class="fas fa-times delete-item"></i>
-        </li>
-        `);
+    todos.forEach(todo => {
+        if(todo.checked) {
+            // add a new todo to the list todoItems
+            todoItems.push(todo);
+            // add new li to ul including todo data
+            const listItem = document.querySelector('#todo-list');
+            listItem.insertAdjacentHTML('beforeend', `
+            <li class="todo-item overline" data-key="${todo.id}">
+                <i class="check checkbox" id="${todo.id}"></i>
+                <label>${todo.textInput}</label>
+                <i class="delete-item"></i>
+            </li>
+            `);
+        } else {
+            // add a new todo to the list todoItems
+            todoItems.push(todo);
+            // add new li to ul including todo data
+            const listItem = document.querySelector('#todo-list');
+            listItem.insertAdjacentHTML('beforeend', `
+            <li class="todo-item ${todo.checked}" data-key="${todo.id}">
+                <i class="uncheck checkbox" id="${todo.id}"></i>
+                <label>${todo.textInput}</label>
+                <i class="delete-item"></i>
+            </li>
+            `);
+        }
     });
 }
 
@@ -107,15 +123,24 @@ function toggle(itemKey) {
     const item = document.querySelector(`[data-key='${itemKey}']`);
     
     if(todoItems[itemIndex].checked) {
-        item.firstElementChild.setAttribute('class', 'far fa-check-circle checkbox');
+        item.firstElementChild.setAttribute('class', 'check checkbox');
         item.setAttribute('class', 'todo-item overline');
+        updateLocalStorage(itemIndex);
     } else {      
-        item.firstElementChild.setAttribute('class', 'far fa-circle checkbox');
+        item.firstElementChild.setAttribute('class', 'uncheck checkbox');
         item.setAttribute('class', 'todo-item false');
+        updateLocalStorage(itemIndex);
     }
     itemsLeft();
 }
 
+
+function updateLocalStorage(itemIndex) {
+    let todos = JSON.parse(localStorage.getItem('todos'))
+    todos[itemIndex].checked = true;
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+    
 
 function toggleAllItems() {
     const todos = document.querySelectorAll('#todo-list li i:first-child');
@@ -124,13 +149,13 @@ function toggleAllItems() {
             let itemId = todo.getAttribute('id');
             let itemIndex = todoItems.findIndex(item => item.id == itemId);
             todoItems[itemIndex].checked = true;
-            todo.setAttribute('class', 'far fa-check-circle checkbox');
+            todo.setAttribute('class', 'check checkbox');
             todo.parentElement.setAttribute('class', 'todo-item overline');
         } else {
             let itemId = todo.getAttribute('id');
             let itemIndex = todoItems.findIndex(item => item.id == itemId);
             todoItems[itemIndex].checked = false;
-            todo.setAttribute('class', 'far fa-circle checkbox');
+            todo.setAttribute('class', 'uncheck checkbox');
             todo.parentElement.setAttribute('class', 'todo-item false');
         }
     });
@@ -189,20 +214,26 @@ function clearCompleted() {
 
 
 function displayItems(event) {
-    event.preventDefault();
-    location.hash = '';
+    //change URL
+    if(event.target.parentElement.id === 'completed') {
+        location.hash = 'completed';
+    } else if(event.target.parentElement.id === 'active') {
+        location.hash = 'active';
+    } else {
+        location.hash = '';
+    }
     const listItems = document.querySelectorAll('#todo-list li'); 
     listItems.forEach(item => {
         item.style.display = 'flex';
         if(event.target.parentElement.id === 'completed' && item.classList.contains('false')) {
             item.style.display = 'none';
-            location.hash = 'completed';
         } else if(event.target.parentElement.id === 'active' && !item.classList.contains('false')) {
             item.style.display = 'none';
-            location.hash = 'active';
         }
-    });    
+    });
+    event.preventDefault();   
 }
+
 
 function itemsLeft() {
     const todos = document.querySelector("#count");
@@ -220,25 +251,9 @@ function itemsLeft() {
 }
 
 
-function updateTodo() {
-    document.addEventListener('keypress', function(e) {
-        if (e.currentTarget.activeElement.className === 'content') {
-            if ((e.keyCode || e.which) == 13) {
-                var li = document.createElement('li');
-                var ce = document.createAttribute('contenteditable');
-                ce.value = "true";
-                var cl = document.createAttribute('class');
-                cl.value = 'content';
-                li.setAttributeNode(ce);
-                li.setAttributeNode(cl);
-                e.currentTarget.activeElement.insertAfter(li);
-                li.focus();
-                return false;
-            } else {
-                return true;
-            }
-        }
-    });
+function updateTodo(event) {
+    console.log("here");
+    
 }
 
 
