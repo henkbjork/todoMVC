@@ -47,6 +47,7 @@ function addTodo(event) {
             <li class="todo-item ${todo.checked}" data-key="${todo.id}">
                 <i class="uncheck checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
+                <input type="text" value=${todo.textInput} style="display:none"/>
                 <i class="delete-item"></i>
             </li>
             `);
@@ -86,6 +87,7 @@ function getTodos() {
             <li class="todo-item overline" data-key="${todo.id}">
                 <i class="check checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
+                <input type="text" value=${todo.textInput} style="display:none"/>
                 <i class="delete-item"></i>
             </li>
             `);
@@ -98,6 +100,7 @@ function getTodos() {
             <li class="todo-item ${todo.checked}" data-key="${todo.id}">
                 <i class="uncheck checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
+                <input type="text" value=${todo.textInput} style="display:none"/>
                 <i class="delete-item"></i>
             </li>
             `);
@@ -252,9 +255,35 @@ function itemsLeft() {
 
 
 function updateTodo(event) {
-    console.log("here");
-    
+    if(event.target.parentElement.classList.contains('todo-item')) {
+        const itemKey = event.target.parentElement.dataset.key;  
+        const todoElement = document.querySelector(`[data-key='${itemKey}']`);
+        
+        todoElement.children[1].setAttribute('style', 'display:none');
+        todoElement.children[2].setAttribute('style', 'display:block');
+
+        todoElement.addEventListener('keypress', function(event) {
+            if(event.keyCode == 13) {
+                document.querySelector('#input-text').focus();
+                let textInput = event.target.value;
+                todoElement.children[1].textContent = textInput;
+                // update the element
+                todoElement.children[1].setAttribute('style', 'display:block');
+                todoElement.children[2].setAttribute('style', 'display:none');
+                // update the todoList
+                const itemKey = event.target.parentElement.dataset.key;
+                const itemIndex = todoItems.findIndex(item => item.id === Number(itemKey));
+                
+                
+            }
+        });
+    }
 }
+
+
+
+
+
 
 
 

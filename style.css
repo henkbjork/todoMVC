@@ -85,6 +85,13 @@ header h1 {
     color: #4d4d4d;
 }
 
+#todo-list input {
+    color: #4d4d4d;
+    width: 100%;
+    font-size: 1.5rem;
+    line-height: 4rem;
+}
+
 #todo-list .overline label {
     font-size: 1.5rem;
     text-decoration: line-through;
