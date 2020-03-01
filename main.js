@@ -1,5 +1,8 @@
+'use strict';
+// The list with all the todoItems
 let todoItems = [];
-let checked = true;
+//Sets the value of checked for the "toggle all todo items"
+let checked = true; 
 
 // Add a new todo
 document.querySelector('#input-text').addEventListener('keypress', addTodo);
@@ -25,6 +28,9 @@ document.querySelector('#todo-list').addEventListener('dblclick', updateTodo)
 // load from localstorage
 document.addEventListener('DOMContentLoaded', getTodos);
 
+// Count items from start (if any) in localstorage
+document.addEventListener("DOMContentLoaded", itemsLeft);
+
 
 function addTodo(event) {
     if(event.keyCode == 13) {
@@ -47,7 +53,7 @@ function addTodo(event) {
             <li class="todo-item ${todo.checked}" data-key="${todo.id}">
                 <i class="uncheck checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
-                <input type="text" value=${todo.textInput} style="display:none"/>
+                <input type="text" class="newInput" value=${todo.textInput} style="display:none"/>
                 <i class="delete-item"></i>
             </li>
             `);
@@ -87,7 +93,7 @@ function getTodos() {
             <li class="todo-item overline" data-key="${todo.id}">
                 <i class="check checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
-                <input type="text" value=${todo.textInput} style="display:none"/>
+                <input type="text" class="newInput" value=${todo.textInput} style="display:none"/>
                 <i class="delete-item"></i>
             </li>
             `);
@@ -100,7 +106,7 @@ function getTodos() {
             <li class="todo-item ${todo.checked}" data-key="${todo.id}">
                 <i class="uncheck checkbox" id="${todo.id}"></i>
                 <label>${todo.textInput}</label>
-                <input type="text" value=${todo.textInput} style="display:none"/>
+                <input type="text" class="newInput" value=${todo.textInput} style="display:none"/>
                 <i class="delete-item"></i>
             </li>
             `);
@@ -128,12 +134,11 @@ function toggle(itemKey) {
     if(todoItems[itemIndex].checked) {
         item.firstElementChild.setAttribute('class', 'check checkbox');
         item.setAttribute('class', 'todo-item overline');
-        updateLocalStorage(itemIndex);
     } else {      
         item.firstElementChild.setAttribute('class', 'uncheck checkbox');
         item.setAttribute('class', 'todo-item false');
-        updateLocalStorage(itemIndex);
     }
+    updateLocalStorage(itemIndex);
     itemsLeft();
 }
 
@@ -168,7 +173,7 @@ function toggleAllItems() {
     checked = !checked;
     itemsLeft();
 }
-    
+
 
 function deleteItem(event) {
     if(event.target.classList.contains('delete-item')) {
@@ -257,20 +262,19 @@ function itemsLeft() {
 }
 
 
-function updateTodo(event) {
+function updateTodo(event) {  
     if(event.target.parentElement.classList.contains('todo-item')) {
+        let todos;
         const itemKey = event.target.parentElement.dataset.key;  
         const todoElement = document.querySelector(`[data-key='${itemKey}']`);
 
         todoElement.children[0].setAttribute('style', 'display:none');
         todoElement.children[1].setAttribute('style', 'display:none');
         todoElement.children[2].setAttribute('style', 'display:block');
+        todoElement.children[2].focus();
 
         todoElement.addEventListener('change', function(event) {
-            console.log(event.type);
-            
-            if(event.keyCode == 13 || event.type == 'change') {
-                document.querySelector('#input-text').focus();
+            if(event.keyCode == 13 || event.type == 'change') { 
                 let textInput = event.target.value;
                 todoElement.children[1].textContent = textInput;
                 // update the element
