@@ -1,8 +1,17 @@
 'use strict';
+
+// load from localstorage
+document.addEventListener('DOMContentLoaded', getTodos);
+
+// Count items from start in localstorage
+document.addEventListener('DOMContentLoaded', itemsLeft);
+
+// Set the checked variable for the "toggle all todo items"
+document.addEventListener('DOMContentLoaded', setChecked);
+let checked;
+
 // The list with all the todoItems
 let todoItems = [];
-//Sets the value of checked for the "toggle all todo items"
-let checked = true; 
 
 // Add a new todo
 document.querySelector('#input-text').addEventListener('keypress', addTodo);
@@ -25,16 +34,10 @@ document.querySelector('.fa-angle-down').addEventListener('click', toggleAllItem
 //update item
 document.querySelector('#todo-list').addEventListener('dblclick', updateTodo)
 
-// load from localstorage
-document.addEventListener('DOMContentLoaded', getTodos);
-
-// Count items from start (if any) in localstorage
-document.addEventListener("DOMContentLoaded", itemsLeft);
-
 
 function addTodo(event) {
     if(event.keyCode == 13) {
-        let textInput = event.target.value;
+        let textInput = event.target.value.trim();
         if(textInput !== '') {
             const todo = {
             textInput,
@@ -115,6 +118,21 @@ function getTodos() {
 }
 
 
+function setChecked() {
+    let checkedTrue = [];
+    let checkedFalse = [];
+
+    checkedFalse = todoItems.filter(todo => todo.checked === false);
+    checkedTrue = todoItems.filter(todo => todo.checked === true);
+
+    if(checkedFalse.length === todoItems.length) {
+        checked = false;
+    } else if(checkedTrue.length === todoItems.length) {
+        checked = true;
+    } 
+}
+
+
 function toggleCheckbox(event) {
     if(event.target.classList.contains('checkbox')) {
         const itemKey = event.target.parentElement.dataset.key;  
@@ -138,28 +156,30 @@ function toggle(itemKey) {
         item.firstElementChild.setAttribute('class', 'uncheck checkbox');
         item.setAttribute('class', 'todo-item false');
     }
-    updateLocalStorage(itemIndex);
+    updateLocalStorage();
     itemsLeft();
 }
 
 
-function updateLocalStorage(itemIndex) {
+function updateLocalStorage() {
     let todos = JSON.parse(localStorage.getItem('todos'));
-    if(!todos[itemIndex].checked) {
-        todos[itemIndex].checked = true;
-    } else {
-        todos[itemIndex].checked = false;
-    }
+    todoItems.forEach((todo, index) => {
+        if(todo.checked) {
+            todos[index].checked = true;    
+        } else if(!todo.checked) {
+            todos[index].checked = false; 
+        }
+    });
     localStorage.setItem('todos', JSON.stringify(todos));
 }
     
 
-function toggleAllItems() {
+function toggleAllItems() {  
     const todos = document.querySelectorAll('#todo-list li i:first-child');
     todos.forEach(todo => {
         let itemId = todo.getAttribute('id');
         let itemIndex = todoItems.findIndex(item => item.id == itemId);
-        if(checked) {
+        if(!checked) {
             todoItems[itemIndex].checked = true;
             todo.setAttribute('class', 'check checkbox');
             todo.parentElement.setAttribute('class', 'todo-item overline');
@@ -168,8 +188,8 @@ function toggleAllItems() {
             todo.setAttribute('class', 'uncheck checkbox');
             todo.parentElement.setAttribute('class', 'todo-item false');
         }
-        updateLocalStorage(itemIndex);
     });
+    updateLocalStorage();
     checked = !checked;
     itemsLeft();
 }
@@ -193,6 +213,7 @@ function deleteItem(event) {
     }
 }
 
+
 function removeTodoFromLocalStorage(todoItem) {
     let todos;
     if(localStorage.getItem('todos') === null) {
@@ -214,7 +235,6 @@ function clearCompleted() {
     listItems.forEach(item => {
         if(!item.classList.contains('false')) {
             item.remove();
-            // Clear from localstorage
             removeTodoFromLocalStorage(item);
         } 
     });
@@ -252,7 +272,7 @@ function itemsLeft() {
     todos.textContent = numberOfItemsLeft.length + ' items left';
 
     //Hide nav-bar and arrow
-    if(numberOfItemsLeft.length === 0 && todoItems.length === 0) {
+    if(todoItems.length === 0) {
         document.querySelector('.list-container').style.display = 'none';
         document.querySelector('.fa-angle-down').style.display = 'none';
     } else {
@@ -301,9 +321,3 @@ function updateTodo(event) {
         });
     }
 }
-
-
-
-
-
-
