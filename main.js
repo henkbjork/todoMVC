@@ -1,5 +1,8 @@
 'use strict';
 
+// The list with all the todoItems
+let todoItems = [];
+
 // load from localstorage
 document.addEventListener('DOMContentLoaded', getTodos);
 
@@ -9,9 +12,6 @@ document.addEventListener('DOMContentLoaded', itemsLeft);
 // Set the checked variable for the "toggle all todo items"
 document.addEventListener('DOMContentLoaded', setChecked);
 let checked;
-
-// The list with all the todoItems
-let todoItems = [];
 
 // Add a new todo
 document.querySelector('#input-text').addEventListener('keypress', addTodo);
@@ -23,7 +23,15 @@ document.querySelector('#todo-list').addEventListener('click', toggleCheckbox);
 document.querySelector('#todo-list').addEventListener('click', deleteItem);
 
 // All, Active, Completed
-document.querySelector('#nav-bar').addEventListener('click', displayItems);
+document.querySelector('#nav-bar').addEventListener('click', setURL);
+
+// If the url changes
+window.addEventListener('popstate', e => {
+    displayItems(null, e.state.id);
+});
+
+// Set deafult state for the url
+history.replaceState({id: null}, 'Default state', '#/');
 
 // Clear completed
 document.querySelector('#clear-btn').addEventListener('click', clearCompleted);
@@ -244,25 +252,44 @@ function clearCompleted() {
 }
 
 
-function displayItems(event) {
+function setURL(event) {
     //change URL
-    if(event.target.parentElement.id === 'completed') {
-        location.hash = 'completed';
-    } else if(event.target.parentElement.id === 'active') {
-        location.hash = 'active';
+    let id = event.target.parentElement.id;
+    if(id === 'completed') {
+        history.pushState({id}, `#${id}`, `#/${id}`);
+        displayItems(event, null);
+    } else if(id === 'active') {
+        history.pushState({id}, `#${id}`, `#/${id}`);
+        displayItems(event, null);
     } else {
-        location.hash = '';
+        history.pushState({id}, `#${id}`, `#/${''}`);
+        displayItems(event, null);
     }
+}
+
+
+function displayItems(event, event2) {
     const listItems = document.querySelectorAll('#todo-list li'); 
-    listItems.forEach(item => {
-        item.style.display = 'flex';
-        if(event.target.parentElement.id === 'completed' && item.classList.contains('false')) {
-            item.style.display = 'none';
-        } else if(event.target.parentElement.id === 'active' && !item.classList.contains('false')) {
-            item.style.display = 'none';
-        }
-    });
-    event.preventDefault();   
+    if(event !== null) {
+        listItems.forEach(item => {
+            item.style.display = 'flex';
+            if(event.target.parentElement.id === 'completed' && item.classList.contains('false')) {
+                item.style.display = 'none';
+            } else if(event.target.parentElement.id === 'active' && !item.classList.contains('false')) {
+                item.style.display = 'none';
+            }
+        });
+        event.preventDefault();  
+    } else if(event2 !== null) {
+        listItems.forEach(item => {
+            item.style.display = 'flex';
+            if(event2 === 'completed' && item.classList.contains('false')) {
+                item.style.display = 'none';
+            } else if(event2 === 'active' && !item.classList.contains('false')) {
+                item.style.display = 'none';
+            }
+        });
+    }
 }
 
 

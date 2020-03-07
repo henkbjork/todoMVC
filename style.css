@@ -146,6 +146,11 @@ ul li input {
     margin-left: 1rem;
 }
 
+ul li input:focus {
+    outline: 0;
+    border: 1px solid #777;
+}
+
 .list-container {
     display: flex;
     flex-direction: row;
